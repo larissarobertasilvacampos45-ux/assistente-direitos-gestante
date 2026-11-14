@@ -47,7 +47,7 @@ Nunca invente artigos de lei ou diretrizes médicas que não estejam presentes n
 
 # Configuração do modelo Gemini
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-pro",
+    model_name="gemini-2.5-flash",
     system_instruction=SYSTEM_INSTRUCTION,
     generation_config={
         "temperature": 0.3,
