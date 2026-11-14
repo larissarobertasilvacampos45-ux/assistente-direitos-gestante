@@ -4,7 +4,7 @@ import google.generativeai as genai
 
 # Configuração inicial da página
 st.set_page_config(
-    page_title="Gerador de Plano de Parto Humanizado",
+    page_title="Plataforma Cuidado Materno — Plano de Parto",
     page_icon="👶",
     layout="centered",
 )
@@ -55,96 +55,115 @@ model = genai.GenerativeModel(
     },
 )
 
-# Interface do Usuário (Streamlit)
-st.title("👶 Gerador de Plano de Parto Humanizado")
+# Criação de Abas na Plataforma (Portal de Informações + Gerador)
+st.title("👶 Plataforma de Direitos e Plano de Parto Humanizado")
 st.markdown(
-    "Ferramenta apoiada por IA para empoderar gestantes, garantindo autonomia, "
-    "respeito aos direitos reprodutivos e baseada nas diretrizes oficiais da OMS."
+    "Um espaço seguro para gestantes conhecerem seus direitos e criarem "
+    "seu Plano de Parto fundamentado nas diretrizes oficiais da OMS."
 )
 
-with st.form("plano_parto_form"):
-    st.subheader("1. Identificação")
-    nome = st.text_input("Primeiro Nome ou Apelido (Por segurança, evite nome completo):")
-    semanas = st.number_input("Idade Gestacional (Semanas):", min_value=20, max_value=42, value=36)
-    acompanhante = st.text_input("Acompanhante escolhido(a) por lei:")
+aba1, aba2 = st.tabs(["📖 Conheça Seus Direitos", "✍️ Gerador de Plano de Parto"])
 
-    st.subheader("2. Ambiência e Conforto")
-    ambiente = st.multiselect(
-        "Preferências de ambiente:",
-        [
-            "Luz baixa/suave",
-            "Controle de temperatura/ar-condicionado",
-            "Música ambiente",
-            "Aromaterapia",
-            "Privacidade e liberdade para caminhar",
-        ]
-    )
+with aba1:
+    st.header("Informações Oficiais para a Gestante")
+    st.markdown("""
+    Esta plataforma foi desenvolvida para apoiar você e sua família durante a gestação e o parto.
+    
+    ### 🛡️ Direitos Garantidos por Lei:
+    1. **Direito a Acompanhante:** Conforme a **Lei Federal nº 11.108/2005 [DADO OFICIAL]**, toda gestante tem direito a 1 acompanhante de sua livre escolha durante todo o período de internação (pré-parto, parto e pós-parto).
+    2. **Consentimento Informado:** Nenhum procedimento (como toque vaginal excessivo, raspagem de pelos, lavagem intestinal ou rompimento artificial da bolsa) pode ser feito sem a explicação prévia e o seu consentimento.
+    3. **Liberdade de Posição:** A **OMS [DADO OFICIAL]** recomenda que a mulher adote a posição que preferir no nascimento, evitando a imobilização obrigatória nahorizontal (litotomia).
+    4. **Proibição de Práticas Nocivas:** A manobra de Kristeller (pressionar o fundo do útero) é formalmente rejeitada pelas evidências científicas.
+    """)
 
-    st.subheader("3. Intervenções e Procedimentos")
-    posicao = st.selectbox(
-        "Preferência de posição para o nascimento:",
-        [
-            "Posições verticalizadas / cócoras / de quatro",
-            "Sentada / semi-sentada",
-            "Liberdade para mudar de posição conforme o conforto",
-        ]
-    )
-    intervencoes = st.multiselect(
-        "Preferências sobre intervenções:",
-        [
-            "Evitar manobra de Kristeller (pressão na barriga)",
-            "Evitar episiotomia de rotina (corte no períneo)",
-            "Consentimento informado prévio para qualquer procedimento",
-            "Monitoramento fetal intermitente (se sem riscos)",
-            "Ingestão de líquidos claros e alimentos leves",
-        ]
-    )
+with aba2:
+    st.header("Gerador Automatizado de Plano de Parto")
+    st.markdown("Preencha as suas preferências abaixo para gerar o seu documento personalizado.")
 
-    st.subheader("4. Cuidados com o Recém-Nascido")
-    bebe_cuidados = st.multiselect(
-        "Preferências para os primeiros minutos e pós-parto:",
-        [
-            "Contato pele a pele imediato",
-            "Clampeamento tardio do cordão umbilical (1 a 3 minutos)",
-            "Início da amamentação na primeira hora de vida",
-            "Adiar o primeiro banho do bebê (24 horas ou mais)",
-        ]
-    )
+    with st.form("plano_parto_form"):
+        st.subheader("1. Identificação")
+        nome = st.text_input("Primeiro Nome ou Apelido (Por segurança, evite nome completo):")
+        # [AJUSTE SOLICITADO]: Permitir desde o início da gestação (4 semanas) até o termo (42 semanas)
+        semanas = st.number_input("Idade Gestacional (Semanas):", min_value=4, max_value=42, value=32)
+        acompanhante = st.text_input("Acompanhante escolhido(a) por lei:")
 
-    submitted = st.form_submit_button("Gerar Meu Plano de Parto")
+        st.subheader("2. Ambiência e Conforto")
+        ambiente = st.multiselect(
+            "Preferências de ambiente:",
+            [
+                "Luz baixa/suave",
+                "Controle de temperatura/ar-condicionado",
+                "Música ambiente",
+                "Aromaterapia",
+                "Privacidade e liberdade para caminhar",
+            ]
+        )
 
-if submitted:
-    if not nome:
-        st.warning("Por favor, preencha ao menos o seu nome ou apelido.")
-    else:
-        with st.spinner("Consultando base oficial e redigindo seu Plano de Parto..."):
-            base_oficial = carregar_base_conhecimento()
+        st.subheader("3. Intervenções e Procedimentos")
+        posicao = st.selectbox(
+            "Preferência de posição para o nascimento:",
+            [
+                "Posições verticalizadas / cócoras / de quatro",
+                "Sentada / semi-sentada",
+                "Liberdade para mudar de posição conforme o conforto",
+            ]
+        )
+        intervencoes = st.multiselect(
+            "Preferências sobre intervenções:",
+            [
+                "Evitar manobra de Kristeller (pressão na barriga)",
+                "Evitar episiotomia de rotina (corte no períneo)",
+                "Consentimento informado prévio para qualquer procedimento",
+                "Monitoramento fetal intermitente (se sem riscos)",
+                "Ingestão de líquidos claros e alimentos leves",
+            ]
+        )
 
-            prompt_usuario = f"""
-            [DADOS INFORMADOS PELA GESTANTE]
-            - Nome/Apelido: {nome}
-            - Idade Gestacional: {semanas} semanas
-            - Acompanhante: {acompanhante}
-            - Ambiência: {', '.join(ambiente)}
-            - Posição para o nascimento: {posicao}
-            - Intervenções: {', '.join(intervencoes)}
-            - Cuidados com o recém-nascido: {', '.join(bebe_cuidados)}
+        st.subheader("4. Cuidados com o Recém-Nascido")
+        bebe_cuidados = st.multiselect(
+            "Preferências para os primeiros minutos e pós-parto:",
+            [
+                "Contato pele a pele imediato",
+                "Clampeamento tardio do cordão umbilical (1 a 3 minutos)",
+                "Início da amamentação na primeira hora de vida",
+                "Adiar o primeiro banho do bebê (24 horas ou mais)",
+            ]
+        )
 
-            [BASE DE CONHECIMENTO OFICIAL (RAG)]
-            {base_oficial}
+        submitted = st.form_submit_button("Gerar Meu Plano de Parto")
 
-            Com base exclusivamente nos dados da gestante e nas diretrizes oficiais recuperadas acima, gere um documento formal, humanizado e estruturado em seções claras, citando de forma elegante as normativas legais aplicáveis.
-            """
+    if submitted:
+        if not nome:
+            st.warning("Por favor, preencha ao menos o seu nome ou apelido.")
+        else:
+            with st.spinner("Consultando base oficial e redigindo seu Plano de Parto..."):
+                base_oficial = carregar_base_conhecimento()
 
-            try:
-                response = model.generate_content(prompt_usuario)
-                st.success("Plano de Parto gerado com sucesso!")
-                st.markdown("---")
-                st.markdown(response.text)
-                st.markdown("---")
-                st.info(
-                    "💡 Dica: Você pode copiar este texto ou imprimi-lo para apresentar "
-                    "à equipe médica da maternidade."
-                )
-            except Exception as e:
-                st.error(f"Ocorreu um erro ao gerar o plano: {e}")
+                prompt_usuario = f"""
+                [DADOS INFORMADOS PELA GESTANTE]
+                - Nome/Apelido: {nome}
+                - Idade Gestacional: {semanas} semanas
+                - Acompanhante: {acompanhante}
+                - Ambiência: {', '.join(ambiente)}
+                - Posição para o nascimento: {posicao}
+                - Intervenções: {', '.join(intervencoes)}
+                - Cuidados com o recém-nascido: {', '.join(bebe_cuidados)}
+
+                [BASE DE CONHECIMENTO OFICIAL (RAG)]
+                {base_oficial}
+
+                Com base exclusivamente nos dados da gestante e nas diretrizes oficiais recuperadas acima, gere um documento formal, humanizado e estruturado em seções claras, citando de forma elegante as normativas legais aplicáveis.
+                """
+
+                try:
+                    response = model.generate_content(prompt_usuario)
+                    st.success("Plano de Parto gerado com sucesso!")
+                    st.markdown("---")
+                    st.markdown(response.text)
+                    st.markdown("---")
+                    st.info(
+                        "💡 Dica: Você pode copiar este texto ou imprimi-lo para apresentar "
+                        "à equipe médica da maternidade."
+                    )
+                except Exception as e:
+                    st.error(f"Ocorreu um erro ao gerar o plano: {e}")
